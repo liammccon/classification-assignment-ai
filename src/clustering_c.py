@@ -6,6 +6,8 @@ from iris.subsets import *
 from clustering import distortion as d
 from k_means import *
 import numpy as np
+import matplotlib.pyplot as plt
+import numpy as np
 
 
 def get_mean(info, iteration, feature1, feature2):
@@ -48,7 +50,7 @@ axis[0, 0].plot(all_petal_widths, all_petal_lengths, 'o', color='black', label='
 axis[0, 0].plot(starting_petal_width_K2, starting_petal_length_K2, 'r^', label="Starting Means")
 axis[0,0].set_title("K = 2 Starting")
 axis[0,0].set_xlabel('Petal Width')
-axis[0,0].set_ylabel('Petal Length')
+axis[0,0].set_ylabel('Petal Length') 
 
 axis[0, 1].plot(all_petal_widths, all_petal_lengths, 'o', color='black', label='Petal')
 axis[0, 1].plot(mid_petal_width_K2, mid_petal_length_K2, 'r^', label="Means after 1 iteration")

@@ -9,26 +9,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import numpy as np
 
-
-def get_mean(info, iteration, feature1, feature2):
-    '''
-    Get all of the means for two features of a specified iteration, to display on a 2D graph.
-    Param
-    iteration: the iteration you'd like to inspect, or -1 for the final iteration 
-    Returns
-    An array of all of the means for feature1 of the specified iteration
-    An array of all of the means for feature2 of the specified iteration
-    '''
-    feature1Means = []
-    feature2Means = []
-    meansByIteration = info['means']
-    if iteration == -1:
-        iteration = len(meansByIteration) - 1
-    for mean in range(len(meansByIteration[0])):
-        feature1Means.append(meansByIteration[iteration][mean][feature1])
-        feature2Means.append(meansByIteration[iteration][mean][feature2])
-    return feature1Means, feature2Means
-
 data = iris['data']
 
 #Run kMeansClustering for K=2, with a max of 50 iterations

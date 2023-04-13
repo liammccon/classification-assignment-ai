@@ -4,8 +4,9 @@ one-layer neural network using a sigmoid non-linearity (linear classification wi
 moid non-linearity). The function should take three arguments: the data vectors, the
 parameters defining the neural network, and the pattern classes. (10 marks)
 '''
-from iris.data import iris
 import numpy as np
+from iris.data import iris
+from iris.subsets import *
 
 def mean_sq_error(query: list,
                   hidden_layer_size: int, 
@@ -18,8 +19,15 @@ def mean_sq_error(query: list,
     Given weight parameters and pattern class(es) for the one-layer neural network. \n
     Given a hidden layer size of N, the weights for input to hidden should be arranged in a N by 4 two dimensional array\n
         and the weights for hidden to output should be in an array length N\n
-    '''
 
+    Mean squared error is calculated as the sum of (y - z)^2 over the entire iris dataset (for Setosa and Versicolor), /n
+    where y is the correct label (0 for Setosa and 1 for Versicolor) and z is the output of the neural network, from 0 to 1. 
+    '''
+    data = iris['data']
+    setosa_data = data[SETOSA_START:SETOSA_END]
+    versicolor_data = data[VERSICOLOR_START:VERSICOLOR_END]
+
+    
     return -1
 
 def neural_network(query: list,
@@ -28,7 +36,6 @@ def neural_network(query: list,
                   weights_hidden_to_output: list, 
                   class_1_name: str, 
                   class_2_name: str = None) -> float:
-    data = iris['data']
     '''
     Calculates the output of a neural network with given parameters:,\n
     Weight parameters and pattern class(es) for the one-layer neural network. \n
@@ -36,7 +43,6 @@ def neural_network(query: list,
     Given two classes, it will output which class the query seems to belong to, class 1 (0) to class 2 (1) \n
     Given a hidden layer size of N, the weights for input to hidden should be arranged in a N by 4 two dimensional array\n
         and the weights for hidden to output should be in an array length N\n
-
     '''
     if len(weights_input_to_hidden) != hidden_layer_size:
         raise Exception("Given a hidden layer size of N, the weights for input to hidden should be arranged in a N by 4 two dimensional array")

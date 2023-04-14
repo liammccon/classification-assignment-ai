@@ -8,90 +8,76 @@ import numpy as np
 from iris.data import iris
 from iris.subsets import *
 
-def mean_sq_error(query: list,
-                  hidden_layer_size: int, 
-                  weights_input_to_hidden:list, 
-                  weights_hidden_to_output: list) -> float: 
+def mean_sq_error(weights: list,
+                  class_0_name: str, 
+                  class_1_name: str,
+                  two_dimensions_subset: tuple = None) -> float: 
     '''
     Calculates the mean squared error over the iris dataset for Setosa and Versicolor (the classes which are most difficult to distinguish)\n
     Given weight parameters and pattern class(es) for the one-layer neural network. \n
-    Given a hidden layer size of N, the weights for input to hidden should be arranged in a N by 4 two dimensional array\n
-        and the weights for hidden to output should be in an array length N\n
+    If a tuple is given for `two_dimensions_subset`, only those two dimensions will be calculated.
 
     Mean squared error is calculated as the sum of (y - z)^2 over the entire iris dataset (for Setosa and Versicolor), /n
     where y is the correct label (0 for Setosa and 1 for Versicolor) and z is the output of the neural network, from 0 to 1. 
     '''
     data = iris['data']
-    setosa_data = data[SETOSA_START:SETOSA_END]
-    versicolor_data = data[VERSICOLOR_START:VERSICOLOR_END] 
-    class_1_name = "setosa"
-    class_2_name = "versicolor"
+    class_0_start, class_0_end = get_class_start_end(class_0_name)
+    class_1_start, class_1_end = get_class_start_end(class_1_name)
+    
+    class_0_data = data[class_0_start:class_0_end]
+    class_1_data = data[class_1_start:class_1_end]
     sum = 0
-    for sample in setosa_data:
-        prediction = neural_network(sample, hidden_layer_size, weights_input_to_hidden, weights_hidden_to_output, class_1_name, class_2_name)
+    
+    if two_dimensions_subset != None:
+        one_layer_network = one_layer_network_2D
+    else:
+        one_layer_network = one_layer_network_4D
+
+    for sample in class_0_data:
+        prediction = one_layer_network(sample, weights, two_dimensions_subset)
         sum += (0 - prediction)**2
     
-    for sample in versicolor_data:
-        prediction = neural_network(sample, hidden_layer_size, weights_input_to_hidden, weights_hidden_to_output, class_1_name, class_2_name)
+    for sample in class_1_data:
+        prediction = one_layer_network(sample, weights, two_dimensions_subset)
         sum += (1 - prediction)**2
 
-    MSE = sum / (len(setosa_data) + len(versicolor_data))
+    MSE = sum / (len(class_0_data) + len(class_1_data))
     return MSE
 
-def neural_network(query: list,
-                  hidden_layer_size: int, 
-                  weights_input_to_hidden:list, 
-                  weights_hidden_to_output: list, 
-                  class_1_name: str, 
-                  class_2_name: str = None) -> float:
+def one_layer_network_4D( query: list, weights: list, subset_ignore) -> float:
     '''
-    Calculates the output of a neural network with given parameters:,\n
-    Weight parameters and pattern class(es) for the one-layer neural network. \n
+    Calculates the output of a neural network with given weight parameters:\n
     Given one class, it will output the certainty (0 to 1) that the query belongs to that class\n
     Given two classes, it will output which class the query seems to belong to, class 1 (0) to class 2 (1) \n
-    Given a hidden layer size of N, the weights for input to hidden should be arranged in a N by 4 two dimensional array\n
-        and the weights for hidden to output should be in an array length N\n
     '''
-    if len(weights_input_to_hidden) != hidden_layer_size:
-        raise Exception("Given a hidden layer size of N, the weights for input to hidden should be arranged in a N by 4 two dimensional array")
+    if len(weights) != 4 and len(query) != 4:
+        raise Exception('Should have four weights and four dimensions to the query')
+    dot_product = 0
+    for i in range(4):
+        dot_product += weights[i] * query[i]
+    return sig(dot_product)
 
-    hidden_outputs = []
-
-    #Calculating input to hidden layer 
-    for neuron in range(len(hidden_layer_size)):
-        dot_product = 0
-        for feature in range(4):
-            dot_product += query[feature] * weights_input_to_hidden[neuron][feature]
-        hidden_outputs.append(sig(dot_product))
-
-    final_dot_product = 0
-    #Calculating hidden layer to output layer
-    for hidden_neuron in range(len(hidden_outputs)):
-        final_dot_product += hidden_outputs[hidden_neuron] * weights_hidden_to_output[hidden_neuron]
-    
-    output = sig(final_dot_product)
-
-    ''' Optional print outputs
-    if class_2_name == None:
-        print(f"The neural network is currently {output * 100}% certain that the given input was in the class {class_1_name}")
-    else:
-        print(f"The neural network is {(output) * 100}% certain the query was in {class_1_name} and {(1 - output)*100}% certain the query was in class 2")
+def one_layer_network_2D( query: list, weights: list, two_dimensions_subset: tuple) -> float:
     '''
-    return output
-
-    
+    Calculates the output of a neural network with given weight parameters:\n
+    Given one class, it will output the certainty (0 to 1) that the query belongs to that class\n
+    Given two classes, it will output which class the query seems to belong to, class 1 (0) to class 2 (1) \n
+    '''
+    if len(two_dimensions_subset) != 2 and len(query) != 2:
+        raise Exception('Should have two weights and two dimensions to the desired subset')
+    weights_2D = [weights[two_dimensions_subset[0]], weights[two_dimensions_subset[1]]]
+    dot_product = 0
+    for i in range(2):
+        dot_product += weights[i] * query[i]
+    return sig(dot_product)
 
 def sig(z):
     return 1 / (1 + np.exp(-z))
 
-def verify_weight_arrays(hidden_layer_size: int, 
-                  weights_input_to_hidden:list, 
-                  weights_hidden_to_output: list) -> bool :
-    if len(weights_input_to_hidden) != hidden_layer_size:
-        raise Exception("Given a hidden layer size of N, the weights for input to hidden should be arranged in a N by 4 two dimensional array")
-    if len(weights_input_to_hidden[0] != 4):
-        raise Exception("Given a hidden layer size of N, the weights for input to hidden should be arranged in a N by 4 two dimensional array")
-    if len(weights_hidden_to_output) != hidden_layer_size:
-        raise Exception("The weights for hidden to output should be in an array the length of the number of neurons in the hidden layer")
-
-
+def get_class_start_end(class_name):
+    if class_name.lower() == 'virginica':
+        return VIRGINICA_START, VIRGINICA_END
+    elif class_name.lower() == 'setosa':
+        return SETOSA_START, SETOSA_END
+    elif class_name.lower() == 'versicolor':
+        return VERSICOLOR_START, VERSICOLOR_END

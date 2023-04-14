@@ -11,9 +11,7 @@ from iris.subsets import *
 def mean_sq_error(query: list,
                   hidden_layer_size: int, 
                   weights_input_to_hidden:list, 
-                  weights_hidden_to_output: list, 
-                  class_1_name: str, 
-                  class_2_name: str = None) -> float: 
+                  weights_hidden_to_output: list) -> float: 
     '''
     Calculates the mean squared error over the iris dataset for Setosa and Versicolor (the classes which are most difficult to distinguish)\n
     Given weight parameters and pattern class(es) for the one-layer neural network. \n
@@ -25,10 +23,20 @@ def mean_sq_error(query: list,
     '''
     data = iris['data']
     setosa_data = data[SETOSA_START:SETOSA_END]
-    versicolor_data = data[VERSICOLOR_START:VERSICOLOR_END]
-
+    versicolor_data = data[VERSICOLOR_START:VERSICOLOR_END] 
+    class_1_name = "setosa"
+    class_2_name = "versicolor"
+    sum = 0
+    for sample in setosa_data:
+        prediction = neural_network(sample, hidden_layer_size, weights_input_to_hidden, weights_hidden_to_output, class_1_name, class_2_name)
+        sum += (0 - prediction)**2
     
-    return -1
+    for sample in versicolor_data:
+        prediction = neural_network(sample, hidden_layer_size, weights_input_to_hidden, weights_hidden_to_output, class_1_name, class_2_name)
+        sum += (1 - prediction)**2
+
+    MSE = sum / (len(setosa_data) + len(versicolor_data))
+    return MSE
 
 def neural_network(query: list,
                   hidden_layer_size: int, 
@@ -85,3 +93,5 @@ def verify_weight_arrays(hidden_layer_size: int,
         raise Exception("Given a hidden layer size of N, the weights for input to hidden should be arranged in a N by 4 two dimensional array")
     if len(weights_hidden_to_output) != hidden_layer_size:
         raise Exception("The weights for hidden to output should be in an array the length of the number of neurons in the hidden layer")
+
+

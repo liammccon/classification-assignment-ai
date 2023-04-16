@@ -105,4 +105,3 @@ def test():
     print(f'From versicolor, just below: {one_layer_network_2D([0, 0, 5, 1.4], [w1, w2], w0, (PETAL_WIDTH, PETAL_LENGTH))}')
     print(f'From virginica, just above: {one_layer_network_2D([0, 0, 5, 1.8], [w1, w2], w0, (PETAL_WIDTH, PETAL_LENGTH))}')
     print(f'So versicolor = class 0, virgnica = class 1 here')
-

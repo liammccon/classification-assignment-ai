@@ -3,7 +3,6 @@ Plot the results of the learning process by showing the initial, intermediate, a
 verged cluster centers overlaid on the data for k = 2 and k = 3. (5 marks)
 '''
 from iris.subsets import *
-from clustering import distortion as d
 from k_means import *
 import numpy as np
 import matplotlib.pyplot as plt

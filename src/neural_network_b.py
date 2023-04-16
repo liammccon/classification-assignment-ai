@@ -13,7 +13,7 @@ import numpy as np
 
 #Plotting the petal widths and lenghts for Versicolor and Virginica:
 figure, axis = plt.subplots(1, 2)
-figure.suptitle("Title", fontsize=16)
+figure.suptitle("Good and Bad Decision Boundaries", fontsize=16)
 axis[0].plot( versicolor_petal_widths, versicolor_petal_lengths, 'o', color='blue', label='Versicolor')
 axis[0].plot( virginica_petal_widths, virginica_petal_lengths, 'o', color='green', label='Virginica')
 

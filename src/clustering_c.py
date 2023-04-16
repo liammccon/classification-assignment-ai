@@ -26,10 +26,11 @@ final_petal_width_K2, final_petal_length_K2 = get_mean(infoK2, -1, PETAL_WIDTH, 
 figure, axis = plt.subplots(2, 3)
 figure.suptitle("Starting, Intermidiate, and Converged Clusters for K = 2 and K = 3", fontsize=16)
 axis[0, 0].plot(all_petal_widths, all_petal_lengths, 'o', color='black', label='Petal')
-axis[0, 0].plot(starting_petal_width_K2, starting_petal_length_K2, 'r^', label="Starting Means")
+axis[0, 0].plot(starting_petal_width_K2, starting_petal_length_K2, 'r^', label="Means")
 axis[0,0].set_title("K = 2 Starting")
 axis[0,0].set_xlabel('Petal Width')
 axis[0,0].set_ylabel('Petal Length') 
+axis[0,0].legend()
 
 axis[0, 1].plot(all_petal_widths, all_petal_lengths, 'o', color='black', label='Petal')
 axis[0, 1].plot(mid_petal_width_K2, mid_petal_length_K2, 'r^', label="Means after 1 iteration")

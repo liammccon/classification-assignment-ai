@@ -136,11 +136,8 @@ for i in range(1, len(colors)):
     update_info(info, w1, w2, bias, mse)
 
 axis.set_title(f"Starting weights: w1 = 0, w2 = 1, w0 = -6\nEnding weights: w1 = {w1:.3f}, w2 = {w2:.3f}, w0 = {bias:.3f}")
-mse_bad = mean_sq_error([0, 1], -6,  VERSICOLOR, VIRGINICA, two_dimensions)
 axis.set_xlabel(f'Petal Width')
 axis.legend()
-
-print(info)
 
 #Set a large size
 figure.set_size_inches(10, 7)

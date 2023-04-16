@@ -1,5 +1,4 @@
 """
-
 Copied from the scikit-learn dataset, to avoid slow imports
 
 To get this from scikit-learn, install with:

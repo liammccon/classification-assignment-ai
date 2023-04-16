@@ -37,12 +37,10 @@ def mean_sq_error(weights: list,
     for sample in class_0_data:
         prediction = one_layer_network(sample, weights, bias, two_dimensions_subset)
         sum += (0 - prediction)**2
-        print(f"Sample {sample}, pred: {prediction:.2f}, in class {class_to_string(class_0)}: {sum}")
 
     for sample in class_1_data:
         prediction = one_layer_network(sample, weights, bias, two_dimensions_subset)
         sum += (1 - prediction)**2
-        print(f"Sample {sample}, pred: {prediction:.2f}, in class {class_to_string(class_1)}: {sum}")
 
     MSE = sum / ((len(class_0_data) + len(class_1_data)))
     return MSE
@@ -108,4 +106,3 @@ def test():
     print(f'From virginica, just above: {one_layer_network_2D([0, 0, 5, 1.8], [w1, w2], w0, (PETAL_WIDTH, PETAL_LENGTH))}')
     print(f'So versicolor = class 0, virgnica = class 1 here')
 
-test()

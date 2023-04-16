@@ -9,6 +9,7 @@ from iris.data import iris
 from iris.subsets import *
 
 def mean_sq_error(weights: list,
+                  bias: float,
                   class_0_name: str, 
                   class_1_name: str,
                   two_dimensions_subset: tuple = None) -> float: 
@@ -34,17 +35,17 @@ def mean_sq_error(weights: list,
         one_layer_network = one_layer_network_4D
 
     for sample in class_0_data:
-        prediction = one_layer_network(sample, weights, two_dimensions_subset)
+        prediction = one_layer_network(sample, weights, bias, two_dimensions_subset)
         sum += (0 - prediction)**2
     
     for sample in class_1_data:
-        prediction = one_layer_network(sample, weights, two_dimensions_subset)
+        prediction = one_layer_network(sample, weights, bias, two_dimensions_subset)
         sum += (1 - prediction)**2
 
     MSE = sum / (len(class_0_data) + len(class_1_data))
     return MSE
 
-def one_layer_network_4D( query: list, weights: list, subset_ignore) -> float:
+def one_layer_network_4D( query: list, weights: list, bias: float, subset_ignore = None) -> float:
     '''
     Calculates the output of a neural network with given weight parameters:\n
     Given one class, it will output the certainty (0 to 1) that the query belongs to that class\n
@@ -55,20 +56,22 @@ def one_layer_network_4D( query: list, weights: list, subset_ignore) -> float:
     dot_product = 0
     for i in range(4):
         dot_product += weights[i] * query[i]
+    dot_product += bias
     return sig(dot_product)
 
-def one_layer_network_2D( query: list, weights: list, two_dimensions_subset: tuple) -> float:
+def one_layer_network_2D( query: list,  weights: list, bias: float, two_dimensions_subset: tuple) -> float:
     '''
     Calculates the output of a neural network with given weight parameters:\n
     Given one class, it will output the certainty (0 to 1) that the query belongs to that class\n
     Given two classes, it will output which class the query seems to belong to, class 1 (0) to class 2 (1) \n
     '''
-    if len(two_dimensions_subset) != 2 and len(query) != 2:
-        raise Exception('Should have two weights and two dimensions to the desired subset')
+    if len(two_dimensions_subset) != 2 and len(query) != 2 and len(query) != 4:
+        raise Exception('Should have two weights, two dimensions to the desired subset, and a 4D query')
     weights_2D = [weights[two_dimensions_subset[0]], weights[two_dimensions_subset[1]]]
     dot_product = 0
     for i in range(2):
         dot_product += weights[i] * query[i]
+    dot_product += bias
     return sig(dot_product)
 
 def sig(z):
@@ -81,3 +84,9 @@ def get_class_start_end(class_name):
         return SETOSA_START, SETOSA_END
     elif class_name.lower() == 'versicolor':
         return VERSICOLOR_START, VERSICOLOR_END
+
+print(one_layer_network_4D([10, 20, 30, 40], (1, 2, 3, 4), 0))
+print(one_layer_network_4D([1, 2, 3, 4], [1, -1, .5, 0], .5))
+
+
+print(mean_sq_error([1, 2, 5, 3], 2, "Virginica", "Versicolor", (2, 3)))

@@ -1,4 +1,5 @@
-'''Neural Network, Question E:
+'''
+Neural Network, Question E:
 Write code that computes the summed gradient for an ensemble of patterns. Illustrate
 the gradient by showing (i.e. plotting) how the decision boundary changes for a small
 step. (10 marks)
@@ -6,7 +7,7 @@ step. (10 marks)
 
 from neural_network_a import *
 
-BIAS = -1
+BIAS = -1 #This constant is used to indicate that the bias is the term we are deriving for.
 
 def summed_gradient(weights:list, bias:float, chosen_weight:int, two_dimension_subset: tuple = None):
     '''
@@ -135,7 +136,7 @@ for i in range(1, len(colors)):
     axis.plot(x, y_new, color = colors[i], label=f'Iteration: {i}, MSE: {mse:.4f}')
     update_info(info, w1, w2, bias, mse)
 
-axis.set_title(f"Starting weights: w1 = 0, w2 = 1, w0 = -6\nEnding weights: w1 = {w1:.3f}, w2 = {w2:.3f}, w0 = {bias:.3f}")
+axis.set_title(f"Starting weights: w1 = 0, w2 = 1, w0 = -6, alpha = {alpha}\nEnding weights: w1 = {w1:.3f}, w2 = {w2:.3f}, w0 = {bias:.3f}")
 axis.set_xlabel(f'Petal Width')
 axis.legend()
 
